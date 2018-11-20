@@ -1,0 +1,4 @@
+Easy - 100
+Medium - 100
+Hard - 100
+Impossible - 100
