@@ -273,22 +273,28 @@ will regenerate over time. Click the screen to begin.", 40)
     def key_press(u_i, values, m_keys):  # Changes the coordinates of the spaceship if a specific key is pressed.
         if u_i.type == pygame.KEYDOWN:
             if u_i.key in [m_keys[0], m_keys[1]]:
-                values[1] = -10
+                values[1] -= 10
             elif u_i.key in [m_keys[2], m_keys[3]]:
-                values[1] = 10
+                values[1] += 10
             elif u_i.key in [m_keys[4], m_keys[5]]:
-                values[2] = -10
+                values[2] -= 10
             elif u_i.key in [m_keys[6], m_keys[7]]:
-                values[2] = 10
+                values[2] += 10
 
             if u_i.key == pygame.K_SPACE:
                 values[3] = True
 
     def key_release(u_i, values, m_keys):  # Resets the coordinates of the spaceship when the key is released.
         if u_i.type == pygame.KEYUP:
-            if u_i.key in m_keys:
-                values[1] = 0
-                values[2] = 0
+            if u_i.key in [m_keys[0], m_keys[1]]:
+                values[1] += 10
+            elif u_i.key in [m_keys[2], m_keys[3]]:
+                values[1] -= 10
+            elif u_i.key in [m_keys[4], m_keys[5]]:
+                values[2] += 10
+            elif u_i.key in [m_keys[6], m_keys[7]]:
+                values[2] -= 10
+
             elif u_i.key == pygame.K_SPACE:
                 values[3] = False
 
@@ -314,7 +320,7 @@ will regenerate over time. Click the screen to begin.", 40)
 
         return high_scores_dict
 
-    # --------- Main Program Loop ---------
+    # --------- Main Program Loop(s) ---------
     while not game_start:  # Controls instructions/starting screen.
         timer = pygame.time.get_ticks()
         temp_timer = 5000
