@@ -1,4 +1,4 @@
-Easy - 2795
-Medium - 2760
-Hard - 2950
-Impossible - 3970
+Easy - 0
+Medium - 0
+Hard - 0
+Impossible - 0
