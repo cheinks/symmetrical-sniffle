@@ -48,7 +48,7 @@ pygame.init()
 
 screen = pygame.display.set_mode([999, 750])
 pygame.display.set_caption("Jump!")
-bckg_image_1 = pygame.image.load('jump_game_bckg.png')  # Adapted from noobtuts.com
+bckg_image_1 = pygame.image.load('template_bckg.png')  # Adapted from noobtuts.com
 '''bckg_image_2 = pygame.image.load('jump_game_bckg_2.png')  # Adapted from noobtuts.com'''
 
 clock = pygame.time.Clock()
