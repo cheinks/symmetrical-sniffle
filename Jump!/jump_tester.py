@@ -2,7 +2,7 @@ import pygame
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, ground_level):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.ground_level = 520 - 50
 
