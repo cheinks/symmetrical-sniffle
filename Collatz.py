@@ -11,7 +11,7 @@ def test_conjecture(given):
             value *= 3
             value += 1
         print(value)
-        if value == 1:
+        if value <= 1:
             running = False
         i += 1
     print()

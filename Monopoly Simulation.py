@@ -7,7 +7,7 @@ def roll_the_dice():
     return die_1 + die_2
 
 
-game_counter = 1000000
+game_counter = 10000
 jail_counter = 0
 monopoly_database = {
     '0': {'NAME': 'GO', 'TIMES_LANDED': 0, 'COLOR': 'N/A'},
