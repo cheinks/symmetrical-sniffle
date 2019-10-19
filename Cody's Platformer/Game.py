@@ -89,7 +89,7 @@ class Platform(Sprite):
 
 class Ground(Platform):
     def __init__(self, x, width):
-        Platform.__init__(self, 'ground_main.png', x, vertical_boundary-128, width, 135)
+        Platform.__init__(self, 'ground.png', x, vertical_boundary-128, width, 135)
         self.image.set_alpha(0)
 
 
@@ -99,14 +99,14 @@ pygame.display.set_caption("Cody's Platformer")
 main_screen = pygame.display.set_mode([horizontal_boundary, vertical_boundary])
 main_background = Background('8bit_wallpaper7.jpg', 0, 0, horizontal_boundary, vertical_boundary)
 main_background_2 = Background('8bit_wallpaper7.jpg', main_background.width, 0, horizontal_boundary, vertical_boundary)
-background = pygame.image.load('background_main.png')
+background = pygame.image.load('sky.png')
 
 # To keep track of time
 clock = pygame.time.Clock()
 play_speed = 30
 
 # Instantiate all the sprites
-player_1 = Player('player_main.png', 50, 200, 20, 35)
+player_1 = Player('player.png', 50, 200, 20, 35)
 Players = pygame.sprite.Group()
 Players.add(player_1)
 
