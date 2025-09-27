@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="673e5cc5-d460-4723-804e-7391ebd81b42" name="Default" comment="" />
+    <list default="true" id="673e5cc5-d460-4723-804e-7391ebd81b42" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/SkipBo/solitaire tutorial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkipBo/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/SkipBo/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -134,7 +138,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/chein/OneDrive/Documents/GitHub/symmetrical-sniffle&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/chein/OneDrive/Documents/GitHub/symmetrical-sniffle/SkipBo&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -143,6 +147,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\chein\OneDrive\Documents\GitHub\symmetrical-sniffle\SkipBo" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.main">
     <configuration name="Game" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="symmetrical-sniffle" />

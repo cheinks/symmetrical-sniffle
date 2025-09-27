@@ -16,11 +16,13 @@ CARD_SCALE = 0.6
 CARD_WIDTH = 140 * CARD_SCALE
 CARD_HEIGHT = 190 * CARD_SCALE
 
-# Size of card mats as percent of card size
+# How big is the mat we'll place the card on?
 MAT_PERCENT_OVERSIZE = 1.25
 MAT_HEIGHT = int(CARD_HEIGHT * MAT_PERCENT_OVERSIZE)
 MAT_WIDTH = int(CARD_WIDTH * MAT_PERCENT_OVERSIZE)
 
+# How much space do we leave as a gap between the mats?
+# Done as a percent of the mat size.
 VERTICAL_MARGIN_PERCENT = 0.10
 HORIZONTAL_MARGIN_PERCENT = 0.10
 
@@ -31,7 +33,7 @@ BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 START_X = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 # Card constants
-CARD_VALUES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "SB"]
+CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 
 # The Y of the top row (4 piles)
@@ -43,14 +45,24 @@ MIDDLE_Y = TOP_Y - MAT_HEIGHT - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 # How far apart each pile goes
 X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
+# If we fan out the cards stacked on each other, how far apart to fan them?
 CARD_VERTICAL_OFFSET = CARD_HEIGHT * CARD_SCALE * 0.3
 
-PILE_COUNT = 5
-DRAW_PILE = 1
+# Constants that represent "what pile is what" for the game
+PILE_COUNT = 13
+BOTTOM_FACE_DOWN_PILE = 0
+BOTTOM_FACE_UP_PILE = 1
 PLAY_PILE_1 = 2
 PLAY_PILE_2 = 3
 PLAY_PILE_3 = 4
 PLAY_PILE_4 = 5
+PLAY_PILE_5 = 6
+PLAY_PILE_6 = 7
+PLAY_PILE_7 = 8
+TOP_PILE_1 = 9
+TOP_PILE_2 = 10
+TOP_PILE_3 = 11
+TOP_PILE_4 = 12
 
 # Face down image
 FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
@@ -86,15 +98,38 @@ class MyGame(arcade.Window):
         self.held_cards_original_position = []
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
+        # ---  Create the mats the cards go on.
+
+        # Create mats for bottom draw piles
+        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, 0, 0, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = START_X, BOTTOM_Y
+        self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, 0, 0, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = START_X + X_SPACING, BOTTOM_Y
+        self.pile_mat_list.append(pile)
+
+        # Create the seven middle piles
+        for i in range(7):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, 0, 0, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = START_X + i * X_SPACING, MIDDLE_Y
+            self.pile_mat_list.append(pile)
+
+        # Create the foundation piles
+        for i in range(4):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, 0, 0, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = START_X + i * X_SPACING, TOP_Y
+            self.pile_mat_list.append(pile)
+
         self.card_list = arcade.SpriteList()
 
         # Create every card
         for card_suit in CARD_SUITS:
             for card_value in CARD_VALUES:
                 card = Card(card_suit, card_value, CARD_SCALE)
+                card.position = START_X, BOTTOM_Y
                 self.card_list.append(card)
 
-        # Shuffle the deck
         for pos1 in range(len(self.card_list)):
             pos2 = random.randrange(len(self.card_list))
             self.card_list.swap(pos1, pos2)
@@ -104,21 +139,36 @@ class MyGame(arcade.Window):
 
         # Put all the cards in the bottom face-down pile
         for card in self.card_list:
-            self.piles[DRAW_PILE].append(card)
+            self.piles[BOTTOM_FACE_DOWN_PILE].append(card)
 
-        # Dealing mechanism
+        # - Pull from that pile into the middle piles, all face-down
+        # Loop for each pile
+        for pile_no in range(PLAY_PILE_1, PLAY_PILE_7 + 1):
+            # Deal proper number of cards for that pile
+            for j in range(pile_no - PLAY_PILE_1 + 1):
+                # Pop the card off the deck we are dealing from
+                card = self.piles[BOTTOM_FACE_DOWN_PILE].pop()
+                # Put in the proper pile
+                self.piles[pile_no].append(card)
+                # Move card to same position as pile we just put it in
+                card.position = self.pile_mat_list[pile_no].position
+                # Put on top in draw order
+                self.pull_to_top(card)
 
-        # Final touches
+        # Flip up the top card in each pile
+        for i in range(PLAY_PILE_1, PLAY_PILE_7 + 1):
+            self.piles[i][-1].face_up()
 
     def on_draw(self):
         """ Render the screen. """
+        # Clear the screen
         self.clear()
 
         #Draw the mats the cards go onto
         self.pile_mat_list.draw()
 
         # Draw the cards
-        self.card_list.draw() # Don't need to draw every card, only the visible ones
+        self.card_list.draw()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
@@ -135,21 +185,21 @@ class MyGame(arcade.Window):
             #Figure out what pile the card is in
             pile_index = self.get_pile_for_card(primary_card)
 
-            if pile_index == DRAW_PILE:
+            if pile_index == BOTTOM_FACE_DOWN_PILE:
                 # Flip three cards
                 for i in range(3):
                     # If we run out of cards, stop
-                    if len(self.piles[DRAW_PILE]) == 0:
+                    if len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0:
                         break
                     # Get top card
-                    card = self.piles[DRAW_PILE][-1]
+                    card = self.piles[BOTTOM_FACE_DOWN_PILE][-1]
                     # Flip face up
                     card.face_up()
                     # Align position with proper pile
-                    card.position = self.pile_mat_list[DRAW_PILE].position
+                    card.position = self.pile_mat_list[BOTTOM_FACE_UP_PILE].position
                     # Remove from face down pile and add to face up pile
-                    self.piles[DRAW_PILE].remove(card)
-                    self.piles[DRAW_PILE].append(card)
+                    self.piles[BOTTOM_FACE_DOWN_PILE].remove(card)
+                    self.piles[BOTTOM_FACE_UP_PILE].append(card)
                     # Put on top draw order wise
                     self.pull_to_top(card)
 
@@ -165,6 +215,14 @@ class MyGame(arcade.Window):
                 # Put on top in drawing order
                 self.pull_to_top(self.held_cards[0])
 
+                # Is this a stack of cards? If so, grab the other cards too
+                card_index = self.piles[pile_index].index(primary_card)
+                for i in range(card_index + 1, len(self.piles[pile_index])):
+                    card = self.piles[pile_index][i]
+                    self.held_cards.append(card)
+                    self.held_cards_original_position.append(card.position)
+                    self.pull_to_top(card)
+
         else:
             # Click on a mat instead of a card?
             mats = arcade.get_sprites_at_point((x,y), self.pile_mat_list)
@@ -174,16 +232,16 @@ class MyGame(arcade.Window):
 
                 # Is it our turned over flip mat, with no cards on it?
                 if (
-                    mat_index == DRAW_PILE
-                    and len(self.piles[DRAW_PILE]) == 0
+                    mat_index == BOTTOM_FACE_DOWN_PILE
+                    and len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0
                 ):
                     # Flip the deck back over so we can restart
-                    temp_list = self.piles[DRAW_PILE].copy()
+                    temp_list = self.piles[BOTTOM_FACE_UP_PILE].copy()
                     for card in reversed(temp_list):
                         card.face_down()
-                        self.piles[DRAW_PILE].remove(card)
-                        self.piles[DRAW_PILE].append(card)
-                        card.position = self.pile_mat_list[DRAW_PILE].position
+                        self.piles[BOTTOM_FACE_UP_PILE].remove(card)
+                        self.piles[BOTTOM_FACE_DOWN_PILE].append(card)
+                        card.position = self.pile_mat_list[BOTTOM_FACE_DOWN_PILE].position
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
@@ -207,7 +265,35 @@ class MyGame(arcade.Window):
             if pile_index == self.get_pile_for_card(self.held_cards[0]):
                 pass
 
-            # Implement game rules here
+            # Is it on a middle play pile?
+            elif PLAY_PILE_1 <= pile_index <= PLAY_PILE_7:
+                # Are there already cards there?
+                if len(self.piles[pile_index]) > 0:
+                    # Move cards to proper position
+                    top_card = self.piles[pile_index][-1]
+                    for i, dropped_card in enumerate(self.held_cards):
+                        dropped_card.position = top_card.center_x, top_card.center_y - CARD_VERTICAL_OFFSET * (i+1)
+                else:
+                    # Are there no cards in the middle of the play pile?
+                    for i, dropped_card in enumerate(self.held_cards):
+                        # Move cards to proper position
+                        dropped_card.position = pile.center_x, pile.center_y - CARD_VERTICAL_OFFSET * i
+
+                for card in self.held_cards:
+                    # Cards are in the right position, but need to be in the right list too
+                    self.move_card_to_new_pile(card, pile_index)
+
+                # Success
+                reset_position = False
+
+            elif TOP_PILE_1 <= pile_index <= TOP_PILE_4 and len(self.held_cards) == 1:
+                # Move position of card to pile
+                self.held_cards[0].position = pile.position
+                # Put in correct card list
+                for card in self.held_cards:
+                    self.move_card_to_new_pile(card, pile_index)
+
+                reset_position = False
 
         if reset_position:
             # Location invalid, return cards to original position
@@ -257,14 +343,6 @@ class MyGame(arcade.Window):
         """ Move the card to the specified pile """
         self.remove_card_from_pile(card)
         self.piles[pile_index].append(card)
-
-
-class Player(arcade.Sprite):
-    """ Object containing game information for each participant """
-    def __init__(self):
-
-        super().__init__()
-
 
 class Card(arcade.Sprite):
     """ Card sprite """
