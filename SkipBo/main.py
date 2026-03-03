@@ -43,8 +43,8 @@ CARD_VERTICAL_OFFSET = CARD_HEIGHT * CARD_SCALE * 0.3
 MAT_COLOR = arcade.csscolor.DARK_OLIVE_GREEN
 
 # Card reference values
-# CARD_VALUES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "SB"]
-CARD_VALUES = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "K"]
+CARD_VALUES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "SB"]
+# CARD_VALUES = ["K", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 PILE_TYPES = ["DECK", "HAND", "PLAY", "STOCK", "DISCARD", "RECYCLE"]
 FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
@@ -56,6 +56,7 @@ PLAY_PILE_2 = 1 # west
 PLAY_PILE_3 = 2 # south
 PLAY_PILE_4 = 3 # east
 DRAW_PILE = 4 # center
+MAT_BUFFER = 5 # The index of the first mat of a player
 
 # Control variables for the game instance
 NUMBER_OF_PLAYERS = 1
@@ -78,6 +79,8 @@ class MyGame(arcade.Window):
         self.card_list = None
 
         self.players = None
+        # Contains the index of the first discard mat of each player
+        self.player_discard_index = None
 
         # Create a list of lists, each holds the place mats for a player
         self.player_mat_list = None
@@ -89,6 +92,7 @@ class MyGame(arcade.Window):
         # Create a list of lists, each holds a pile of cards
         self.play_piles = None
         self.stock_piles = None
+        self.hands = None
 
         # Create of list of lists, each holds a list of discard piles
         self.discard_piles = None
@@ -103,6 +107,7 @@ class MyGame(arcade.Window):
         self.players = []
         for i in range(NUMBER_OF_PLAYERS):
             self.players.append(Player(100, 100))
+        self.player_discard_index = []
 
         """ Here we create the sprite for each pile, """
 
@@ -130,27 +135,30 @@ class MyGame(arcade.Window):
 
         # Now create the mats for each player
         for i in range(NUMBER_OF_PLAYERS):
+            # First make the stockpile mat at the correct position
             stock_pos = self.players[i].get_stock_pos()
             pile = Mat(PILE_TYPES[3])
             pile.position = stock_pos
             self.pile_mat_list.append(pile)
+            # Now make the discard mats
             for j in range(4):
                 pile = Mat(PILE_TYPES[4])
                 pile.position = stock_pos[0] - (j + 1) * X_SPACING, stock_pos[1]
                 self.pile_mat_list.append(pile)
+            # Save the index of the first mat for later reference
+            self.player_discard_index.append(MAT_BUFFER + i * 5)
 
         """ Next we construct the game cards """
 
         # Make the numbered cards
         for i in range(12):
             for card_value in CARD_VALUES:
-                card = Card("Clubs", card_value, CARD_SCALE)
+                card = Card(card_value, CARD_SCALE)
                 self.card_list.append(card)
 
         # Make the Skip-Bos
         for i in range(18):
-            # card = Card("Clubs", "SB", CARD_SCALE)
-            card = Card("Clubs", "K", CARD_SCALE)
+            card = Card("SB", CARD_SCALE)
             self.card_list.append(card)
 
         # Shuffle the cards
@@ -169,6 +177,7 @@ class MyGame(arcade.Window):
 
         self.play_piles = [ [] for _ in range(PILE_COUNT - 1) ]
         self.stock_piles = [ [] for _ in range(NUMBER_OF_PLAYERS) ]
+        self.hands = [[] for _ in range(NUMBER_OF_PLAYERS)]
 
         self.discard_piles = [ [ [] for _ in range(4) ] for _ in range(NUMBER_OF_PLAYERS) ]
 
@@ -233,15 +242,18 @@ class MyGame(arcade.Window):
             valid_move = False
             pile_type = pile.get_type()
 
-            if pile_type not in [PILE_TYPES[0], PILE_TYPES[1], PILE_TYPES[3], PILE_TYPES[3]]:
+            if pile_type not in [PILE_TYPES[0], PILE_TYPES[1], PILE_TYPES[3], PILE_TYPES[5]]:
                 cards_below = arcade.get_sprites_at_point((x, y), self.card_list)
+                # We know the card we are holding is already there
+                cards_below.remove(self.held_cards[0])
+                below_length = len(cards_below)
+
                 if pile_type == PILE_TYPES[2]:
                     """ For a PLAY pile, card value must be 1 if pile is empty, 
                      or must be one higher than top card, or must be a skip-bo. """
                     held_value = self.held_cards[0].get_value()
-                    below_length = len(cards_below)
                     # Check if card already there
-                    if below_length > 0:
+                    if 0 < below_length < 12:
                         if held_value in ["SB", "K"]:
                             valid_move = True
                         else:
@@ -253,15 +265,23 @@ class MyGame(arcade.Window):
                         valid_move = (held_value in ["1", "SB", "K"])
                 elif pile_type == PILE_TYPES[4]:
                     """For a DISCARD pile, must make 4 piles before stacking, 
-                    but can play any card on top of any card."""
-                    valid_move = True
+                    but can play any card on top of any card.
+                    Also, can only discard cards from the hand. """
+
+                    if below_length > 0:
+                        # Make sure there are four stacks already
+                        valid_move = True
+                    else:
+                        valid_move = True
 
             if valid_move:
                 # Remove the card from the old pile
+                self.remove_card_from_pile(self.held_cards[0])
                 # Move it to the new position
                 self.held_cards[0].position = pile.position
                 self.held_cards[0].save_position()
                 # Put it in the new pile
+                self.put_card_in_pile(self.held_cards[0], pile)
                 reset_position = False
 
         if reset_position:
@@ -297,6 +317,30 @@ class MyGame(arcade.Window):
                     if card in pile:
                         pile.remove(card)
                         return
+            for stock in self.stock_piles:
+                if card in stock:
+                    stock.remove(card)
+                    return
+
+    def put_card_in_pile(self, card, pile):
+        mat_index = self.pile_mat_list.index(pile)
+        # If it is one of the play piles, toss it on!
+        if mat_index < 4:
+            self.play_piles[mat_index].append(card)
+        # Otherwise, need to determine which player-discard it is
+        else:
+            found = False
+            p = 1
+            while not found:
+                """ Indexes 5-9 are for player 1, 10-14 for player 2, etc, 
+                where multiples of 5 correspond to stock piles. """
+                if mat_index < MAT_BUFFER + p * 5:
+                    found = True
+                    player_index = p - 1
+                    pile_index = (mat_index - 1) % 5
+                    self.discard_piles[player_index][pile_index].append(card)
+                else:
+                    p = p + 1
 
 
 class Player:
@@ -306,9 +350,12 @@ class Player:
 
         self.stock_position = x + 4 * X_SPACING, y
         self.discard_position = [(x,y), (x+ X_SPACING,y), (x + 2 * X_SPACING, y), (x + 3 * X_SPACING, y)]
+        self.hand_position = 700, 700
 
     def get_stock_pos(self):
         return self.stock_position
+    def get_hand_pos(self):
+        return self.hand_position
 
 
 class Mat(arcade.SpriteSolidColor):
@@ -322,9 +369,8 @@ class Mat(arcade.SpriteSolidColor):
 
 class Card(arcade.Sprite):
     """ Card sprite """
-    def __init__(self, suit, value, scale=1.0):
+    def __init__(self, value, scale=1.0):
 
-        self.suit = suit
         self.value = value
 
         # String description of where the card is
@@ -332,7 +378,7 @@ class Card(arcade.Sprite):
         self.old_position = None
 
         self.is_face_up = False
-        self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+        self.image_file_name = f"card{self.value}.png"
 
         super().__init__(FACE_DOWN_IMAGE, scale, hit_box_algorithm="None")
 

@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="673e5cc5-d460-4723-804e-7391ebd81b42" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/Fraction Finder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Truth Tables.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkipBo/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/SkipBo/main.py" afterDir="false" />
     </list>
@@ -120,6 +122,7 @@
     &quot;Python.Ascii Letter Converter.executor&quot;: &quot;Run&quot;,
     &quot;Python.Collatz.executor&quot;: &quot;Run&quot;,
     &quot;Python.Fortnite Location Generator.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Fraction Finder.executor&quot;: &quot;Run&quot;,
     &quot;Python.Game.executor&quot;: &quot;Run&quot;,
     &quot;Python.Game2.executor&quot;: &quot;Run&quot;,
     &quot;Python.Hangman.executor&quot;: &quot;Run&quot;,
@@ -130,10 +133,13 @@
     &quot;Python.Roman Numerals.executor&quot;: &quot;Run&quot;,
     &quot;Python.Space Arcade Game.executor&quot;: &quot;Run&quot;,
     &quot;Python.Titanfall 2 Loadout.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Truth Tables.executor&quot;: &quot;Run&quot;,
     &quot;Python.Zork Alternate Overworld.executor&quot;: &quot;Run&quot;,
+    &quot;Python.interactive_screen_capture.executor&quot;: &quot;Run&quot;,
     &quot;Python.jump_tester.executor&quot;: &quot;Run&quot;,
     &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.planet.executor&quot;: &quot;Run&quot;,
     &quot;Python.solitaire tutorial.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -153,7 +159,29 @@
       <recent name="C:\Users\chein\OneDrive\Documents\GitHub\symmetrical-sniffle\SkipBo" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.Truth Tables">
+    <configuration name="Fraction Finder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="symmetrical-sniffle" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Fraction Finder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Game" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="symmetrical-sniffle" />
       <option name="ENV_FILES" value="" />
@@ -176,7 +204,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Space Arcade Game" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Truth Tables" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="symmetrical-sniffle" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -185,11 +213,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SpaceGame" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SpaceGame/Space Arcade Game.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Truth Tables.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -243,17 +271,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.Truth Tables" />
+      <item itemvalue="Python.Fraction Finder" />
       <item itemvalue="Python.solitaire tutorial" />
       <item itemvalue="Python.Game" />
-      <item itemvalue="Python.Space Arcade Game" />
       <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
+        <item itemvalue="Python.Truth Tables" />
+        <item itemvalue="Python.Fraction Finder" />
         <item itemvalue="Python.solitaire tutorial" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.Game" />
-        <item itemvalue="Python.Space Arcade Game" />
       </list>
     </recent_temporary>
   </component>
